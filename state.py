@@ -1,4 +1,5 @@
 import quaternion_math as qm
+import numpy as np
 
 class State:
     def __init__(self,r,v,q,w):
