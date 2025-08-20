@@ -12,3 +12,4 @@ for i in range(20):
     test_craft.step(a, dt)
     sim_storage.append(test_craft)
     print(test_craft.state)
+    print("\n")
