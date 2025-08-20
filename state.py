@@ -16,4 +16,4 @@ class State:
         self.q = qm.q_normalize(self.q)
 
     def  __str__(self):
-        return f"State(q = {self.q}, w = {self.w})"
+        return f"State(     q = {self.q},       w = {self.w})"

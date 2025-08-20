@@ -2,6 +2,7 @@ import state as st
 import quaternion_math as qm
 import dynamics as dy
 import numpy as np
+import visualization as vis
 
 w = np.array([2,3,4])
 a = np.array([2,2,2])
