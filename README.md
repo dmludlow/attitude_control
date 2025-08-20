@@ -22,7 +22,6 @@ ACS_sim/
 ├── state.py             # State representation (position, velocity, attitude, etc.)
 ├── testing.py           # Unit tests for modules
 ├── visualization.py     # Visualization and plotting tools
-└── __pycache__/         # Python cache files (ignore)
 ```
 
 *Created by Daniel Ludlow, 2025*
