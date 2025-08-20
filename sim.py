@@ -15,7 +15,7 @@ dt = 0.1
 
 states = []
 
-for i in range(20):
+for i in range(80):
     test_craft.step(a, dt)
     states.append(copy.deepcopy(test_craft.state))  # Store a copy of the state
     print(test_craft.state)
