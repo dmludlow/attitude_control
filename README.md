@@ -4,7 +4,7 @@ This project simulates the attitude dynamics and control of spacecraft using Pyt
 
 ## Features
 
-- **State:** Propagation:** Simulates spacecraft attitude and angular velocity using quaternion math.
+- **State Propagation:** Simulates spacecraft attitude and angular velocity using quaternion math.
 - **Dynamics:** Models rotational motion based on applied torques and spacecraft inertia.
 - **Control:** (Planned/Partial) Framework for implementing attitude control laws.
 - **Visualization:** Tools for plotting and visualizing attitude over time.
