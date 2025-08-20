@@ -3,9 +3,7 @@ import numpy as np
 import dynamics as dy
 
 class State:
-    def __init__(self,r,v,q,w):
-        self.r = np.asarray(r, dtype=float)                #np array with position [x,y,z]
-        self.v = np.asarray(v, dtype=float)                #np array with translational velocity [x,y,z]
+    def __init__(self,q,w):  
         self.q = np.asarray(q, dtype=float)                #np array with quaternion [r,x,y,z]
         self.w = np.asarray(w, dtype=float)                #np array with angular velocity [x,y,z]
 
