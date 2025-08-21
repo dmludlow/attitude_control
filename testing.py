@@ -1,3 +1,7 @@
+'''
+This file is for small scale testing of the ACS_sim package.
+'''
+
 import state as st
 import quaternion_math as qm
 import dynamics as dy

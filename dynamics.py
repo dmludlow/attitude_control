@@ -1,7 +1,14 @@
+'''
+This file contains dynamics and other physics functions required for attitude simulation
+'''
+
 import numpy as np
 import quaternion_math as qm
 
-def integrate_omega(w,alpha,dt):     #updates w according euler integration (change to rk4 later)
+def integrate_omega(w,alpha,dt):
+    '''Integrates angular velocity using euler's method.
+    **Update to rk4 method later**
+    '''
     alpha = np.array(alpha)
 
     w = w + alpha * dt
@@ -9,6 +16,14 @@ def integrate_omega(w,alpha,dt):     #updates w according euler integration (cha
     return w
 
 def integrate_angle(q,w,a,dt):
+    '''Integrates quaternion position using euler's method.
+    
+    q: current quaternion vector
+    w: current angular velocity vector
+    a: angular acceleration vector
+    dt: time step in seconds
+    Returns: updated quaternion vector
+    '''
     w_ave = (w + integrate_omega(w, a, dt)) / 2
 
     theta = np.linalg.norm(w_ave * dt)

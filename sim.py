@@ -1,3 +1,7 @@
+'''
+This file contains the main simulation loop for a spacecraft attitude control system.
+'''
+
 import numpy as np
 import spacecraft as sc
 import visualization as vis
@@ -17,7 +21,7 @@ states = []
 
 for i in range(80):
     test_craft.step(a, dt)
-    states.append(copy.deepcopy(test_craft.state))  # Store a copy of the state
+    states.append(copy.deepcopy(test_craft.state))
     print(test_craft.state)
     print("\n")
 

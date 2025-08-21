@@ -1,3 +1,7 @@
+'''
+This file contains functions for visualizing spacecraft dynamics simulation results.
+'''
+
 import matplotlib.pyplot as plt
 import numpy as np
 import spacecraft
@@ -5,6 +9,7 @@ import state
 import quaternion_math as qm
 
 def plot_w(states_arr, dt):
+    '''Plots the angular velocity over time from the states array.'''
     angular_velocities = np.array([state.w for state in states_arr])
     num_steps = angular_velocities.shape[0]
     time = np.arange(num_steps) * dt  # Time array in seconds
@@ -19,6 +24,7 @@ def plot_w(states_arr, dt):
     plt.show()
 
 def plot_q(states_arr, dt):
+    '''Plots the Euler angles over time from the states array.'''
     quaternions = np.array([state.q for state in states_arr])
     time = np.arange(quaternions.shape[0]) * dt  # Time array in seconds
 

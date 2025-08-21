@@ -1,3 +1,7 @@
+'''
+This file defines the Spacecraft class for simulating spacecraft dynamics.
+'''
+
 import state
 import numpy as np
 
@@ -13,4 +17,5 @@ class Spacecraft:
             self.state = state_in
 
     def step(self, a, dt):
+        '''Updates the spacecraft state based on angular acceleration vector and time step.'''
         self.state.step(a, dt)
