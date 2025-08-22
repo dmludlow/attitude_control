@@ -11,18 +11,24 @@ import quaternion_math as qm
 import numpy as np
 import dynamics as dy
 
+
 class State:
     def __init__(self,q,w):  
-        self.q = np.asarray(q, dtype=float)                #np array with quaternion [r,x,y,z]
-        self.w = np.asarray(w, dtype=float)                #np array with angular velocity [x,y,z]
+        #np array with quaternion [r,x,y,z]
+        self.q = np.asarray(q, dtype=float)
+        #np array with angular velocity [x,y,z]
+        self.w = np.asarray(w, dtype=float)
 
     def step(self,a,dt):
-        '''Updates the state based on angular acceleration vector and time step.'''
-        self.w = dy.integrate_omega(self.w,a,dt)              # update angular velocity
-        self.q = dy.integrate_angle(self.q, self.w, a, dt)    # update quaternion
+        '''Updates the state based on angular acceleration vector and time step.
+        a: angular acceleration vector
+        dt: time step in seconds
+        '''
+        self.w = dy.integrate_omega(self.w,a,dt)
+        self.q = dy.integrate_angle(self.q, self.w, a, dt)
     
     def normalize(self):
-        '''Normalizes the quaternion.'''
+        '''Normalizes the state's quaternion.'''
         self.q = qm.q_normalize(self.q)
 
     def  __str__(self):

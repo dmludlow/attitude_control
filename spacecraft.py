@@ -5,6 +5,7 @@ This file defines the Spacecraft class for simulating spacecraft dynamics.
 import state
 import numpy as np
 
+
 class Spacecraft:
 
     def __init__(self,state_in = None):   # have to add i matrix

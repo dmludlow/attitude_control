@@ -4,6 +4,7 @@ This file contains quaternion math functions used for spacecraft attitude simula
 
 import numpy as np
 
+
 def q_normalize(q):
     '''Normalizes a quaternion.'''
     return q / np.linalg.norm(q)
@@ -22,7 +23,9 @@ def q_prod(q1, q2):
     ])
 
 def q_to_euler(q):
-    '''Converts a quaternion to Euler angles (roll, pitch, yaw).'''
+    '''Converts a quaternion to Euler angles (roll, pitch, yaw).
+    q: quaternion vector
+    Returns: Euler angles in radians as a numpy array [roll, pitch, yaw]'''
     return np.array([
         np.arctan2(2*(q[0]*q[1]), 1 - 2*(q[1]**2 - q[2]**2)),
         np.arcsin(2*(q[0]*q[2] + q[1]*q[3])),
