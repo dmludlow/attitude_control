@@ -13,15 +13,41 @@ This project simulates the attitude dynamics and control of spacecraft using Pyt
 ## Folder Structure
 
 ```
-ACS_sim/
+attitude_control/
+├── __init__.py          # Package marker
 ├── control.py           # Attitude control law implementations (stub/partial)
 ├── dynamics.py          # Spacecraft rotational dynamics
-├── quaternion_math.py   # Quaternion operations and math utilities
+├── quaternion.py        # Quaternion operations and math utilities
 ├── sim.py               # Main simulation loop and setup
 ├── spacecraft.py        # Spacecraft class (inertia, state, torque application)
 ├── state.py             # State representation (position, velocity, attitude, etc.)
 ├── testing.py           # Unit tests for modules
 ├── visualization.py     # Visualization and plotting tools
+├── README.md            # Project documentation
 ```
+
+## Getting Started
+
+1. **Clone the repository** and navigate to the `attitude_control` directory.
+2. **Run the simulation:**  
+   ```bash
+   python sim.py
+   ```
+
+## Requirements
+
+- Python 3.7+
+- NumPy
+- Matplotlib
+
+Install dependencies with:
+```bash
+pip install numpy matplotlib
+```
+
+## Notes
+
+- The control module is currently a stub/partial implementation.
+- Visualization tools require Matplotlib.
 
 *Created by Daniel Ludlow, 2025*
