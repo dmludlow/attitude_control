@@ -18,16 +18,33 @@ initial_state = st.State(
 
 # Create a spacecraft instance with the initial state
 test_craft = sc.Spacecraft(initial_state)
-# Define angular acceleration vector and time step
-a = np.array([0,2,0])
+
+# Time for the simulation to run in seconds.
+time = 20
+# Time step in seconds
 dt = 0.1
+# Total simulation steps
+steps = time / dt
+
+# Define angular acceleration
+# Testing angular acceleration that varies over time
+a = []
+for j in range(steps):
+    if steps/dt < 5:
+        a_cur = 2
+    elif stepts/dt < 10:
+        a_cur = 6
+    else:
+        a_cur = -4
+        
+    a.append(np.array([0,a_cur,0]))
 
 # List to store states for visualization
 states = []
 
 # Run the simulation for a number of steps
-for i in range(80):
-    test_craft.step(a, dt)
+for i in range(steps):
+    test_craft.step(a[i], dt)
     # Store a copy of the current state
     states.append(copy.deepcopy(test_craft.state))
     # Print the final state of the spacecraft for testing
