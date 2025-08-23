@@ -1,35 +1,43 @@
-'''
+"""
 This file contains dynamics and other physics functions required for attitude simulation
-'''
+"""
 
 import numpy as np
-import quaternion_math as qm
+import attitude_control.quaternion as qm
 
 
-def integrate_omega(w,alpha,dt):
-    '''Integrates angular velocity using euler's method.
-
+def integrate_omega(w: np.ndarray, alpha: np.ndarray, dt: float) -> np.ndarray:
+    """
+    Integrates angular velocity using Euler's method.
+    
+    Args:
     w: current angular velocity vector
     alpha: angular acceleration vector
     dt: time step in seconds
-    Returns: updated angular velocity vector
+
+    Returns: 
+    updated angular velocity vector
 
     **Update to rk4 method later**
-    '''
+    """
     # Euler's method for integrating angular velocity
     w = w + alpha * dt
 
     return w
 
-def integrate_angle(q,w,a,dt):
-    '''Integrates quaternion position using euler's method.
-    
-    q: current quaternion vector
-    w: current angular velocity vector
-    a: angular acceleration vector
-    dt: time step in seconds
-    Returns: updated quaternion vector
-    '''
+def integrate_angle(q: qm.Quaternion, w: np.ndarray, a: np.ndarray, dt: float) -> qm.Quaternion:
+    """
+    Integrates quaternion position using euler's method.
+
+    Args:
+        q: current quaternion vector
+        w: current angular velocity vector
+        a: angular acceleration vector
+        dt: time step in seconds
+
+    Returns:
+        Quaternion: updated quaternion vector
+    """
     # Average angular velocity over the time step
     w_ave = (w + integrate_omega(w, a, dt)) / 2
 
@@ -42,7 +50,9 @@ def integrate_angle(q,w,a,dt):
         return q
     else:
         # Calculate the quaternion change
-        dq = np.array([np.cos(theta/2), np.sin(theta/2) * (w_ave[0] * dt) / theta,
-                       np.sin(theta/2) * (w_ave[1] * dt) / theta,
-                       np.sin(theta/2) * (w_ave[2] * dt) / theta])
-        return qm.q_normalize(qm.q_prod(q,dq))
+        dq = qm.Quaternion(np.array([np.cos(theta/2), 
+                                    np.sin(theta/2) * (w_ave[0] * dt) / theta,
+                                    np.sin(theta/2) * (w_ave[1] * dt) / theta,
+                                    np.sin(theta/2) * (w_ave[2] * dt) / theta]
+                                    ))
+        return (q.q_prod(dq)).norm

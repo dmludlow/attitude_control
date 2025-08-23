@@ -1,22 +1,22 @@
-'''
+"""
 This file contains functions for visualizing spacecraft dynamics simulation results.
-'''
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
-import spacecraft
-import state
-import quaternion_math as qm
+import attitude_control.spacecraft
+import attitude_control.state
+import attitude_control.quaternion as qm
 
 
-def plot_w(states_arr, dt):
-    '''Plots the angular velocity over time from the states array.
+def plot_w(states_arr: list, dt: float):
+    """
+    Plots the angular velocity over time from the states array.
 
-    Inputs:
-    states_arr: List of State objects containing the angular velocity.
-    dt: Time step in seconds.
-    '''
-
+    Args:
+        states_arr: List of State objects containing the angular velocity.
+        dt: Time step in seconds.
+    """
     # Extract angular velocities from states
     angular_velocities = np.array([state.w for state in states_arr])
     num_steps = angular_velocities.shape[0]
@@ -33,25 +33,26 @@ def plot_w(states_arr, dt):
     plt.legend()
     plt.show()
 
-def plot_q(states_arr, dt):
-    '''Plots the Euler angles over time from the states array.
-    
-    Inputs:
-    states_arr: List of State objects containing the angular velocity.
-    dt: Time step in seconds.
-    '''
+def plot_q(states_arr: list, dt: float):
+    """
+    Plots the Euler angles over time from the states array.
+
+    Args:
+        states_arr: List of State objects containing the quaternion.
+        dt: Time step in seconds.
+    """
     # Extract quaternions from states
     quaternions = np.array([state.q for state in states_arr])
     # Time array in seconds
     time = np.arange(quaternions.shape[0]) * dt
 
     # Convert quaternions to Euler angles
-    euler_angles = np.array([qm.q_to_euler(q) for q in quaternions])
+    euler_angles = np.array([q.to_euler_angles for q in quaternions])
 
     # Plotting the Euler angles
-    plt.plot(time, euler_angles[:, 0], label='w_x')
-    plt.plot(time, euler_angles[:, 1], label='w_y')
-    plt.plot(time, euler_angles[:, 2], label='w_z')
+    plt.plot(time, euler_angles[:, 0], label='roll')
+    plt.plot(time, euler_angles[:, 1], label='pitch')
+    plt.plot(time, euler_angles[:, 2], label='yaw')
     plt.xlabel('Time (s)')
     plt.ylabel('Euler Angles (rad)')
     plt.title('Euler Angles Over Time')

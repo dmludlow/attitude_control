@@ -1,17 +1,18 @@
-'''
+"""
 This file contains the main simulation loop for a spacecraft attitude control system.
-'''
+"""
 
 import numpy as np
-import spacecraft as sc
-import visualization as vis
 import copy
-import state
+import attitude_control.spacecraft as sc
+import attitude_control.visualization as vis
+import attitude_control.state as st
+import attitude_control.quaternion as qm
 
 
-initial_state = state.State(
+initial_state = st.State(
     # Initial quaternion representing no rotation
-    np.array([1, 0, 0, 0]), 
+    qm.Quaternion(np.array([1, 0, 0, 0])), 
     np.array([0, 0, 0])    
 )
 
