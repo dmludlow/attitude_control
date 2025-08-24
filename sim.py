@@ -24,15 +24,16 @@ time = 20
 # Time step in seconds
 dt = 0.1
 # Total simulation steps
-steps = time / dt
+steps = int(time / dt)
 
 # Define angular acceleration
 # Testing angular acceleration that varies over time
 a = []
 for j in range(steps):
-    if steps/dt < 5:
+    current_time = j * dt
+    if current_time < 5:
         a_cur = 2
-    elif stepts/dt < 10:
+    elif current_time < 10:
         a_cur = 6
     else:
         a_cur = -4
