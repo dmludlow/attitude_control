@@ -77,3 +77,20 @@ class Quaternion:
             np.arcsin(2*(self.q[0]*self.q[2] + self.q[1]*self.q[3])),
             np.arctan2(2*(self.q[0]*self.q[3]), 1 - 2*(self.q[2]**2 - self.q[3]**2))
         ])
+
+    def rotate_by_quat(self, a: float, e: np.ndarray) -> 'Quaternion':
+        """
+        Rotates the quaternion by an angle around a given axis.
+
+        Args:
+            a (float): The angle in radians to rotate.
+            e (np.ndarray): The axis of rotation as a 3-element numpy array.
+
+        Returns:
+            Quaternion: The rotated quaternion as a Quaternion object.
+        """
+        dq = Quaternion(np.array([np.cos(a/2), 
+                                 np.sin(a/2) * e[0],
+                                 np.sin(a/2) * e[1],
+                                 np.sin(a/2) * e[2]]))
+        return (self.q_prod(dq)).norm
