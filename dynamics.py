@@ -60,3 +60,17 @@ def integrate_angle(q: qm.Quaternion, w: np.ndarray, a: np.ndarray, dt: float) -
                                     np.sin(theta/2) * (w_ave[2] * dt) / theta]
                                     ))
     return (q.q_prod(dq)).norm
+
+def torque_to_ang_accel (I: np.ndarray, T: np.ndarray, w: np.ndarray) -> np.ndarray:
+    """
+    Computes the angular acceleration from the applied torque.
+
+    Args:
+        I: Inertia tensor
+        T: Torque vector
+        w: Angular velocity vector
+
+    Returns:
+        Angular acceleration vector
+    """
+    return np.linalg.inv(I) @ (T - np.cross(w, I @ w))

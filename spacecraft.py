@@ -4,6 +4,7 @@ This file defines the Spacecraft class for simulating spacecraft dynamics.
 
 import attitude_control.state as st
 import attitude_control.quaternion as qm
+import attitude_control.dynamics as dy
 import numpy as np
 
 
@@ -43,6 +44,6 @@ class Spacecraft:
         # Extract w from current state
         w = self.state.w
         # Compute angular acceleration: alpha = I^{-1} * (T - w × (I * w))
-        a = np.linalg.inv(self.I) @ (T - np.cross(w, self.I @ w))
+        a = dy.torque_to_ang_accel(self.I, T, w)
         # Update state with computed angular acceleration
         self.state.step(a, dt)
