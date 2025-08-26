@@ -11,7 +11,16 @@ class Spacecraft:
 
     state: st.State
 
-    def __init__(self, state_in: st.State = None):
+    def __init__(self, I: np.ndarray, state_in: st.State = None):
+        """
+        Initializes the Spacecraft with inertia tensor and initial state.
+
+        Inertia tensor follows the form:
+        [Ixx, Ixy, Ixz]
+        [Iyx, Iyy, Iyz]
+        [Izx, Izy, Izz]
+        """
+        self.I = I
         if state_in is None:
             # Initialize with default state: no rotation and zero angular velocity
             self.state = st.State(
@@ -21,12 +30,19 @@ class Spacecraft:
         else:
             self.state = state_in
 
-    def step(self, a: np.ndarray, dt: float):
+    def step(self, T: np.ndarray, dt: float):
         """
-        Updates the spacecraft state based on angular acceleration vector and time step.
+        Updates the spacecraft state based on applied torque vector and time step.
 
         Args:
-            a (np.ndarray): Angular acceleration vector.
+            T (np.ndarray): Applied torque vector.
             dt (float): Time step in seconds.
+
+        Using I*w_dot + w x (Iw) = T to account for high rates and gyroscopic effects.
         """
+        # Extract w from current state
+        w = self.state.w
+        # Compute angular acceleration: alpha = I^{-1} * (T - w × (I * w))
+        a = np.linalg.inv(self.I) @ (T - np.cross(w, self.I @ w))
+        # Update state with computed angular acceleration
         self.state.step(a, dt)

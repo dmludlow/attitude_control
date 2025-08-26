@@ -45,9 +45,13 @@ def integrate_angle(q: qm.Quaternion, w: np.ndarray, a: np.ndarray, dt: float) -
     # Using the formula dq = 0.5 * q * w * dt
     theta = np.linalg.norm(w_ave * dt)
     
-    # If theta is very small, return the original quaternion
-    if theta < 1e-6:
-        return q
+    # If theta is very small, use small angle approximation
+    if theta < 1e-8:
+        dq = qm.Quaternion(np.array([1, 
+                                    theta/2 * (w_ave[0] * dt),
+                                    theta/2 * (w_ave[1] * dt),
+                                    theta/2 * (w_ave[2] * dt)]
+                                    ))
     else:
         # Calculate the quaternion change
         dq = qm.Quaternion(np.array([np.cos(theta/2), 
@@ -55,4 +59,4 @@ def integrate_angle(q: qm.Quaternion, w: np.ndarray, a: np.ndarray, dt: float) -
                                     np.sin(theta/2) * (w_ave[1] * dt) / theta,
                                     np.sin(theta/2) * (w_ave[2] * dt) / theta]
                                     ))
-        return (q.q_prod(dq)).norm
+    return (q.q_prod(dq)).norm
