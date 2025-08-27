@@ -5,14 +5,17 @@ This file defines the Spacecraft class for simulating spacecraft dynamics.
 import attitude_control.state as st
 import attitude_control.quaternion as qm
 import attitude_control.dynamics as dy
+import attitude_control.controllers as ctrl
 import numpy as np
 
 
 class Spacecraft:
 
+    I: np.ndarray
     state: st.State
+    controller: ctrl.controller
 
-    def __init__(self, I: np.ndarray, state_in: st.State = None):
+    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.controller):
         """
         Initializes the Spacecraft with inertia tensor and initial state.
 
@@ -22,14 +25,8 @@ class Spacecraft:
         [Izx, Izy, Izz]
         """
         self.I = I
-        if state_in is None:
-            # Initialize with default state: no rotation and zero angular velocity
-            self.state = st.State(
-                qm.Quaternion(np.array([1, 0, 0, 0])),
-                np.array([0, 0, 0])
-            )
-        else:
-            self.state = state_in
+        self.state = state_in
+        self.controller = controller
 
     def step(self, T: np.ndarray, dt: float):
         """
