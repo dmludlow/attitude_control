@@ -34,14 +34,14 @@ I = np.array([
 
 # Create a PD controller instance
 # Hard coded gains for now, tune later
-Kp = np.diag([5.1*10e-3, 4.7*10e-3, 5.0*10e-3])
-Kd = np.diag([6.2*10e-3, 5.7*10e-3, 6.0*10e-3])
+Kp = np.diag([2e-3, 2e-3, 2e-3])   # [N·m/rad]
+Kd = np.diag([5e-4, 5e-4, 5e-4])   # [N·m/(rad/s)]
 
-Kp = Kp / 200
-Kd = Kd / 200
+Kp = Kp * 1.0
+Kd = Kd * 0.40
 
 # Max torque the controller can apply (N*m)
-max_torque = 0.01
+max_torque = 1e-3
 
 test_cont = ctrl.PD_control(max_torque,Kp, Kd)
 

@@ -6,16 +6,17 @@ This project simulates spacecraft attitude dynamics and control using Python. It
 
 - **State Propagation:** Simulates spacecraft attitude and angular velocity using quaternion mathematics.
 - **Dynamics:** Models rotational motion based on applied torques and spacecraft inertia, using realistic rigid-body equations.
-- **Torque-Based Simulation:** The simulation now accepts torque as the primary input, reflecting real-world actuator interfaces.
-- **Controllers:** Modular controller framework with a PD controller implementation. Easily extendable for custom control laws.
-- **Visualization:** Tools for plotting and visualizing attitude and angular velocity over time.
+- **Torque-Based Simulation:** The simulation uses torque as the primary input, reflecting real-world actuator interfaces.
+- **Controllers:** Modular controller framework with a PD controller implementation, including torque saturation (max torque limit). Easily extendable for custom control laws.
+- **Visualization:** Tools for plotting and visualizing attitude (Euler angles) and angular velocity over time.
+- **Quaternion/Euler Conversion:** Accurate conversion between quaternion and Euler angles for analysis and plotting.
+- **Tunable Gains:** Controller gains (Kp, Kd) and actuator limits are easily adjustable for tuning and experimentation.
 
 ## Folder Structure
 
 ```
 attitude_control/
 ├── __init__.py
-├── control.py           # (Legacy/stub) Control law implementations
 ├── dynamics.py          # Spacecraft rotational dynamics
 ├── quaternion.py        # Quaternion operations and math utilities
 ├── sim.py               # Main simulation loop and setup
@@ -24,17 +25,21 @@ attitude_control/
 ├── visualization.py     # Visualization and plotting tools
 ├── controllers/         # Modular controllers
 │   ├── __init__.py
-│   ├── controller.py    # Base controller class
-│   └── PD_control.py    # Proportional-Derivative controller implementation
+│   ├── controller.py    # Base controller class (with max torque property)
+│   └── PD_control.py    # Proportional-Derivative controller with torque saturation
 ├── README.md            # Project documentation
 ```
 
 ## Getting Started
 
 1. **Clone the repository** and navigate to the `attitude_control` directory.
-2. **Run the simulation:**  
+2. **Install dependencies:**
    ```bash
-   python sim.py
+   pip install numpy matplotlib
+   ```
+3. **Run the simulation:**  
+   ```bash
+   python -m attitude_control.sim
    ```
 
 ## Requirements
@@ -43,15 +48,12 @@ attitude_control/
 - NumPy
 - Matplotlib
 
-Install dependencies with:
-```bash
-pip install numpy matplotlib
-```
-
 ## Notes
 
-- The simulation now uses torque as the main input, not angular acceleration.
-- The controller framework is modular; see `controllers/` for examples.
-- Visualization tools require Matplotlib.
+- The simulation uses torque as the main input, not angular acceleration.
+- The PD controller includes torque saturation to reflect actuator limits.
+- Controller gains (Kp, Kd) and max torque are easily tunable in `sim.py`.
+- Visualization tools require Matplotlib and plot both angular velocity and Euler angles (in degrees).
+- The controller and simulation structure are modular for easy extension and experimentation.
 
 *Created by Daniel Ludlow, 2025*
