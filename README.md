@@ -1,4 +1,4 @@
-# Attitude Determination and Control System (ADCS) Simulator
+# Attitude Control System (ACS) Simulator
 
 This project simulates spacecraft attitude dynamics and control using Python. It is modular, extensible, and designed for both experimentation and future scalability.
 
