@@ -9,7 +9,6 @@ This project simulates spacecraft attitude dynamics and control using Python. It
 - **Torque-Based Simulation:** The simulation now accepts torque as the primary input, reflecting real-world actuator interfaces.
 - **Controllers:** Modular controller framework with a PD controller implementation. Easily extendable for custom control laws.
 - **Visualization:** Tools for plotting and visualizing attitude and angular velocity over time.
-- **Testing:** Basic unit tests for core modules.
 
 ## Folder Structure
 
@@ -22,7 +21,6 @@ attitude_control/
 ├── sim.py               # Main simulation loop and setup
 ├── spacecraft.py        # Spacecraft class (inertia, state, torque application)
 ├── state.py             # State representation (attitude, angular velocity, etc.)
-├── testing.py           # Unit tests for modules
 ├── visualization.py     # Visualization and plotting tools
 ├── controllers/         # Modular controllers
 │   ├── __init__.py

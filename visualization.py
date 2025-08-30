@@ -46,15 +46,17 @@ def plot_q(states_arr: list, dt: float):
     # Time array in seconds
     time = np.arange(quaternions.shape[0]) * dt
 
-    # Convert quaternions to Euler angles
+    # Convert quaternions to Euler angles (in radians)
     euler_angles = np.array([q.to_euler_angles for q in quaternions])
+    # Convert to degrees
+    euler_angles_deg = np.rad2deg(euler_angles)
 
-    # Plotting the Euler angles
-    plt.plot(time, euler_angles[:, 0], label='roll')
-    plt.plot(time, euler_angles[:, 1], label='pitch')
-    plt.plot(time, euler_angles[:, 2], label='yaw')
+    # Plotting the Euler angles in degrees
+    plt.plot(time, euler_angles_deg[:, 0], label='roll')
+    plt.plot(time, euler_angles_deg[:, 1], label='pitch')
+    plt.plot(time, euler_angles_deg[:, 2], label='yaw')
     plt.xlabel('Time (s)')
-    plt.ylabel('Euler Angles (rad)')
+    plt.ylabel('Euler Angles (deg)')
     plt.title('Euler Angles Over Time')
     plt.legend()
     plt.show()
