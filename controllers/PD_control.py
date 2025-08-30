@@ -4,7 +4,7 @@ This file contains implimentation of a PD controller for spacecraft attitude con
 
 import numpy as np
 import attitude_control.controllers as ctrl
-import attitude_control.spacecraft as sc
+import attitude_control.state as st
 
 class PD_control(ctrl.controller):
 
@@ -25,7 +25,7 @@ class PD_control(ctrl.controller):
         self.Kd = Kd
 
     # Very incomplete, just a starting point to make sure controller can act on the spacecraft
-    def torque(self, state_in: sc.State, state_desired: sc.State, I: np.ndarray) -> np.ndarray:
+    def torque(self, state_in: st.State, state_desired: st.State, I: np.ndarray) -> np.ndarray:
         """
         Computes the control torque.
 

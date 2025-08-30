@@ -15,7 +15,7 @@ class Spacecraft:
     state: st.State
     controller: ctrl.controller
 
-    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.controller):
+    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.controller = None):
         """
         Initializes the Spacecraft with inertia tensor and initial state.
 
