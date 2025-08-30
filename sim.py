@@ -37,10 +37,13 @@ I = np.array([
 Kp = np.diag([5.1*10e-3, 4.7*10e-3, 5.0*10e-3])
 Kd = np.diag([6.2*10e-3, 5.7*10e-3, 6.0*10e-3])
 
-Kp = Kp / 100
-Kd = Kd / 100
+Kp = Kp / 200
+Kd = Kd / 200
 
-test_cont = ctrl.PD_control(Kp, Kd)
+# Max torque the controller can apply (N*m)
+max_torque = 0.01
+
+test_cont = ctrl.PD_control(max_torque,Kp, Kd)
 
 # Create a spacecraft instance with the initial state
 test_craft = sc.Spacecraft(I, initial_state, test_cont)
@@ -70,9 +73,6 @@ for i in range(steps):
     test_craft.step(T_cur, dt)
     # Store a copy of the current state
     states.append(copy.deepcopy(test_craft.state))
-
-# Print the number of simulated steps
-print(f"Simulated {len(states)} steps, expected {steps}")
 
 # Visualize the results
 vis.plot_w(states,dt)

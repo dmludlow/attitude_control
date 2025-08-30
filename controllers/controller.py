@@ -7,9 +7,13 @@ from abc import ABC, abstractmethod
 
 class controller(ABC):
 
-    
-    def __init__(self):
+    max_torque: float
+
+    def __init__(self, max_torque: float):
         """
         Initializes the controller.
+        
+        Args:
+            max_torque (float): Maximum allowable torque for the controller.
         """
-        pass
+        self.max_torque = max_torque

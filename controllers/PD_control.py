@@ -12,15 +12,16 @@ class PD_control(ctrl.controller):
     Kp: np.ndarray
     Kd: np.ndarray
 
-    def __init__(self, Kp: np.ndarray, Kd: np.ndarray):
+    def __init__(self, max_torque: float, Kp: np.ndarray, Kd: np.ndarray):
         """
-        Initializes the PD controller with specified gains.
+        Initializes the PD controller with specified gains and max torque.
 
         Args:
-            Kp (nparray): Proportional gain.
-            Kd (nparray): Derivative gain.
-            craft (sc.Spacecraft): The spacecraft to be controlled.
+            max_torque (float): Maximum allowable torque for the controller.
+            Kp (np.ndarray): Proportional gain.
+            Kd (np.ndarray): Derivative gain.
         """
+        super().__init__(max_torque)
         self.Kp = Kp
         self.Kd = Kd
 
@@ -48,4 +49,8 @@ class PD_control(ctrl.controller):
 
         # Controller torque calculation
         T_c = self.Kp @ q_e_vec - self.Kd @ w_e
+
+        # Clip each axis to +/- max_torque
+        T_c = np.clip(T_c, -self.max_torque, self.max_torque)
+
         return T_c
