@@ -5,6 +5,7 @@ Expected quaternion format: [q0, q1, q2, q3] where q0 is the scalar.
 """
 
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 
 class Quaternion:
@@ -65,20 +66,19 @@ class Quaternion:
         return Quaternion(prod)
 
     @property
-    def to_euler_angles(self):
+    def to_euler_angles(self) -> np.ndarray:
         """
         Converts the quaternion to Euler angles (roll, pitch, yaw).
 
         Returns:
             np.ndarray: Euler angles in radians as [roll, pitch, yaw].
         """
-        return np.array([
-            np.arctan2(2*(self.q[0]*self.q[1]), 1 - 2*(self.q[1]**2 - self.q[2]**2)),
-            np.arcsin(2*(self.q[0]*self.q[2] + self.q[1]*self.q[3])),
-            np.arctan2(2*(self.q[0]*self.q[3]), 1 - 2*(self.q[2]**2 - self.q[3]**2))
-        ])
+        # Using scipy for conversion, create a Rotation object
+        # Scalar first format
+        rot = R.from_quat([self.q[0], self.q[1], self.q[2], self.q[3]], scalar_first=True)
+        return rot.as_euler('xyz', degrees=False)
+
     
-    ###### Unverified equation #######
     @staticmethod
     def from_euler_angles(roll: float, pitch: float, yaw: float) -> 'Quaternion':
         """
@@ -92,19 +92,12 @@ class Quaternion:
         Returns:
             Quaternion: The quaternion as a Quaternion object.
         """
-        cy = np.cos(yaw * 0.5)
-        sy = np.sin(yaw * 0.5)
-        cp = np.cos(pitch * 0.5)
-        sp = np.sin(pitch * 0.5)
-        cr = np.cos(roll * 0.5)
-        sr = np.sin(roll * 0.5)
+        # Using scipy for conversion, create a Rotation object
+        rot = R.from_euler('xyz', [roll, pitch, yaw], degrees=False)
+        q = rot.as_quat()
 
-        q0 = cr * cp * cy + sr * sp * sy
-        q1 = sr * cp * cy - cr * sp * sy
-        q2 = cr * sp * cy + sr * cp * sy
-        q3 = cr * cp * sy - sr * sp * cy
-
-        return Quaternion(np.array([q0, q1, q2, q3])).norm
+        # Convert to scalar first format
+        return Quaternion(np.array([q[3], q[0], q[1], q[2]]))
 
     def rotate_by_quat(self, a: float, e: np.ndarray) -> 'Quaternion':
         """
