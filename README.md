@@ -120,3 +120,6 @@ src/
 - The PD and PID controllers include torque saturation to reflect actuator limits.
 - Controller gains (Kp, Kd, Ki) and max torque are easily tunable in `sim.py`.
 - Visualization tools require Matplotlib and plot both angular velocity and Euler angles (in degrees).
+
+---
+*Created by Daniel Ludlow, 2025*
