@@ -7,9 +7,9 @@ It includes methods for updating the state based on angular acceleration and tim
 normalizing the quaternion, and converting the state to a string representation.
 """
 
-import attitude_control.quaternion as qm
+from ..object_state import quaternion as qm
 import numpy as np
-import attitude_control.dynamics as dy
+from ..object_state import dynamics as dy
 
 
 class State:

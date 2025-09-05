@@ -5,8 +5,7 @@ This file contains a base controller class for spacecraft attitude control.
 import numpy as np
 from abc import ABC, abstractmethod
 
-class controller(ABC):
-
+class Controller(ABC):
     max_torque: float
 
     def __init__(self, max_torque: float):

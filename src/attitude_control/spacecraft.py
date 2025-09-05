@@ -2,20 +2,21 @@
 This file defines the Spacecraft class for simulating spacecraft dynamics.
 """
 
-import attitude_control.state as st
-import attitude_control.quaternion as qm
-import attitude_control.dynamics as dy
-import attitude_control.controllers as ctrl
+from .object_state import state as st
+from .object_state import quaternion as qm
+from .object_state import dynamics as dy
+from .controllers import controller as ctrl
 import numpy as np
 
 
 class Spacecraft:
 
+
     I: np.ndarray
     state: st.State
-    controller: ctrl.controller
+    controller: ctrl.Controller
 
-    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.controller = None):
+    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.Controller = None):
         """
         Initializes the Spacecraft with inertia tensor and initial state.
 

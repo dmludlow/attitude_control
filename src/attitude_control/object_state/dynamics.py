@@ -3,7 +3,7 @@ This file contains dynamics and other physics functions required for attitude si
 """
 
 import numpy as np
-import attitude_control.quaternion as qm
+import src.attitude_control.object_state.quaternion as qm
 
 
 def integrate_omega(w: np.ndarray, alpha: np.ndarray, dt: float) -> np.ndarray:
