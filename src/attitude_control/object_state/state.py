@@ -40,7 +40,7 @@ class State:
     @property
     def norm(self):
         """Normalizes the state's quaternion."""
-        self.q = qm.q_normalize(self.q)
+        self.q = self.q.norm
 
     def  __str__(self):
         """Returns a string representation of the state."""
