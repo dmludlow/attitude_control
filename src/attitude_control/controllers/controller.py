@@ -18,7 +18,7 @@ class Controller(ABC):
         self.max_torque = max_torque
 
     @abstractmethod
-    def torque(self, state_in, state_desired, I: np.ndarray) -> np.ndarray:
+    def torque(self, state_in, state_desired, I: np.ndarray, dt: float) -> np.ndarray:
         """
         Abstract method to compute the control torque.
 
@@ -26,6 +26,7 @@ class Controller(ABC):
             state_in: Current state of the spacecraft.
             state_desired: Desired state of the spacecraft.
             I (np.ndarray): Inertia tensor of the spacecraft.
+            dt (float): Time step in seconds.
 
         Returns:
             np.ndarray: Control torque vector.

@@ -31,12 +31,11 @@ class PID_control(ctrl.Controller):
         self.integral_err = np.zeros(3)
         super().__init__(max_torque)
 
-    ### Untested ###
     def torque(self, state_in: st.State, state_desired: st.State, I: np.ndarray, dt: float) -> np.ndarray:
         """
         Computes the control torque.
         Args:
-            state_in (sc.State): Current state of the spacecraft.
+            state_in (st.State): Current state of the spacecraft.
             state_desired (sc.State): Desired state of the spacecraft.
             I (np.ndarray): Inertia tensor of the spacecraft.
             dt (float): Time step in seconds.
