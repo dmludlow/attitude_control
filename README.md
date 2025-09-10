@@ -16,36 +16,6 @@ This project simulates spacecraft attitude dynamics and control using Python. It
 
 ---
 
-## **Important Conventions Used**
-
-- **Quaternion Format:**  
-  All quaternions are represented as `[q0, q1, q2, q3]` where `q0` is the scalar (real) part, and `[q1, q2, q3]` are the vector (imaginary) parts.
-
-- **Quaternion Multiplication:**  
-  The product `q1.q_prod(q2)` computes `q1 * q2` using the scalar-first convention.
-
-- **Quaternion Normalization:**  
-  Quaternions are normalized after each integration step to prevent drift.
-
-
-# Attitude Control System (ACS) Simulator
-
-This project simulates spacecraft attitude dynamics and control using Python. It is modular, extensible, and designed for both experimentation and future scalability.
-
----
-
-## Features
-
-- **State Propagation:** Simulates spacecraft attitude and angular velocity using quaternion mathematics.
-- **Dynamics:** Models rotational motion based on applied torques and spacecraft inertia, using realistic rigid-body equations.
-- **Torque-Based Simulation:** The simulation uses torque as the primary input, reflecting real-world actuator interfaces.
-- **Controllers:** Modular controller framework with PD and PID controller implementations, including torque saturation (max torque limit). Easily extendable for custom control laws.
-- **Visualization:** Tools for plotting and visualizing attitude (Euler angles) and angular velocity over time.
-- **Quaternion/Euler Conversion:** Accurate conversion between quaternion and Euler angles for analysis and plotting.
-- **Tunable Gains:** Controller gains (Kp, Kd, Ki) and actuator limits are easily adjustable for tuning and experimentation.
-
----
-
 ## Important Conventions
 
 - **Quaternion Format:** `[q0, q1, q2, q3]` where `q0` is the scalar (real) part, and `[q1, q2, q3]` are the vector (imaginary) parts.
