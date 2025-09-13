@@ -14,7 +14,7 @@ import src.attitude_control.controllers as ctrl
 initial_state = st.State(
     # Initial quaternion representing no rotation
     qm.Quaternion(np.array([1, 0, 0, 0])), 
-    np.array([0, 0, 0])    
+    np.array([3, 3, 3])    
 )
 
 # Time for the simulation to run in seconds.
@@ -42,9 +42,13 @@ Kd = Kd * 1.0
 
 
 # Tuned PID controller gains
-Kp = np.diag([1e-1, 1e-1, 1e-1])
-Ki = np.diag([0, 0, 0])
-Kd = np.diag([5e0, 5e0, 5e0])
+kp = 0.06
+ki = 0
+kd = 1.8
+
+Kp = np.diag([kp, kp, kp])
+Ki = np.diag([ki, ki, ki])
+Kd = np.diag([kd, kd, kd])
 
 
 # Max torque the controller can apply (N*m)
