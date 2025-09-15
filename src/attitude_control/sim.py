@@ -13,23 +13,23 @@ import src.attitude_control.controllers as ctrl
 
 initial_state = st.State(
     # Initial quaternion representing no rotation
-    qm.Quaternion(np.array([1, 0, 0, 0])), 
-    np.array([3, 3, 3])    
+    q=qm.Quaternion(np.array([1, 0, 0, 0])), 
+    w=np.array([-0.2, 0, 0])    
 )
 
 # Time for the simulation to run in seconds.
 time = 200
 # Time step in seconds
-dt = 0.001
+dt = 0.01
 # Total simulation steps
 steps = int(time / dt)
 
 # Define Inertia Tensor
-# Example: 
+# Diagonal inertia tensor (off-diagonal elements set to zero)
 I = np.array([
-    [1009.86, 18.05, -21.26],
-    [18.05, 811.94, -37.83],
-    [-21.26, -37.83, 803.24]
+    [1009.86, 0, 0],
+    [0, 811.94, 0],
+    [0, 0, 803.24]
 ])
 
 # Create a PD controller instance
@@ -42,9 +42,9 @@ Kd = Kd * 1.0
 
 
 # Tuned PID controller gains
-kp = 0.06
-ki = 0
-kd = 1.8
+kp = 300
+ki = 100
+kd = 80
 
 Kp = np.diag([kp, kp, kp])
 Ki = np.diag([ki, ki, ki])
@@ -59,10 +59,10 @@ test_cont = ctrl.PID_control(max_torque, Kp, Ki, Kd)
 # Create a spacecraft instance with the initial state
 test_craft = sc.Spacecraft(I, initial_state, test_cont)
 
-# Desired state: roll, pitch, and yaw of 30 degrees
+# Desired state: roll, pitch, and yaw of __ degrees
 roll = np.deg2rad(10)
-pitch = np.deg2rad(10)
-yaw = np.deg2rad(10)
+pitch = np.deg2rad(0)
+yaw = np.deg2rad(0)
 q_desired = qm.Quaternion.from_euler_angles(roll, pitch, yaw)
 
 # Desired angular velocity of zero
@@ -80,7 +80,7 @@ for i in range(steps):
                                          state_desired,
                                          test_craft.I,
                                          dt)
-
+    # print(f"T_cur: {T_cur}")
     # Update the spacecraft state with the computed torque
     test_craft.step(T_cur, dt)
     # Store a copy of the current state

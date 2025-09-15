@@ -43,21 +43,29 @@ class PID_control(ctrl.Controller):
             np.ndarray: Control torque vector.
         """
         # Quaternion error
-        q_e = state_desired.q.q_prod(state_in.q.q_conj)
+        q_e = state_in.q.q_prod(state_desired.q.q_conj)
 
         # Take the vector part of the quaternion error for control
-        q_e_vec = q_e.q[1:]
-
+        # FIXED: Ensure we take the "short way" rotation
+        if q_e.q[0] < 0:
+            q_e_vec = -q_e.q[1:]  # Flip to take shorter path
+        else:
+            q_e_vec = q_e.q[1:]
+            
         # Angular velocity error
         w_e = state_desired.w - state_in.w
 
         # Update integral error
         self.integral_err += q_e_vec * dt
+        print(self.integral_err)
+
+        self.integral_err = np.clip(self.integral_err, -1, 1)  # Anti-windup
 
         # Controller torque calculation
-        T_c = self.Kp @ q_e_vec - self.Kd @ w_e + self.Ki @ self.integral_err
+        T_c =  - self.Kp @ q_e_vec + self.Kd @ w_e + self.Ki @ self.integral_err
 
         # Clip each axis to +/- max_torque
         T_c = np.clip(T_c, -self.max_torque, self.max_torque)
-
+        # print(f"Control Torque: {T_c}")
+        # print(self.max_torque)
         return T_c
