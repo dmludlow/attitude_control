@@ -14,7 +14,7 @@ import src.attitude_control.controllers as ctrl
 initial_state = st.State(
     # Initial quaternion representing no rotation
     q=qm.Quaternion(np.array([1, 0, 0, 0])), 
-    w=np.array([-0.2, 0, 0])    
+    w=np.array([-0.2, 0.0000005, 0])    
 )
 
 # Time for the simulation to run in seconds.
@@ -46,9 +46,9 @@ kp = 300
 ki = 100
 kd = 80
 
-Kp = np.diag([kp, kp, kp])
+Kp = np.diag([kp, kp*0.75, kp*0.75])
 Ki = np.diag([ki, ki, ki])
-Kd = np.diag([kd, kd, kd])
+Kd = np.diag([kd, kd*0.75, kd*0.75])
 
 
 # Max torque the controller can apply (N*m)
