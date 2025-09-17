@@ -9,10 +9,10 @@ This project simulates spacecraft attitude dynamics and control using Python. It
 - **State Propagation:** Simulates spacecraft attitude and angular velocity using quaternion mathematics.
 - **Dynamics:** Models rotational motion based on applied torques and spacecraft inertia, using realistic rigid-body equations.
 - **Torque-Based Simulation:** The simulation uses torque as the primary input, reflecting real-world actuator interfaces.
-- **Controllers:** Modular controller framework with PD and PID controller implementations, including torque saturation (max torque limit). Easily extendable for custom control laws.
+- **Controllers:** Modular controller framework with PD and PID controller implementations, including torque saturation (max torque limit). Controller gains can be set as diagonal or full matrices, with an off-diagonal gain variable for easy tuning. Easily extendable for custom control laws.
 - **Visualization:** Tools for plotting and visualizing attitude (Euler angles) and angular velocity over time.
 - **Quaternion/Euler Conversion:** Accurate conversion between quaternion and Euler angles for analysis and plotting.
-- **Tunable Gains:** Controller gains (Kp, Kd, Ki) and actuator limits are easily adjustable for tuning and experimentation.
+- **Tunable Gains:** Controller gains (Kp, Kd, Ki) and actuator limits are easily adjustable for tuning and experimentation. Off-diagonal gain coupling is controlled by the `diag_gain` variable in `sim.py`.
 
 ---
 
@@ -28,9 +28,10 @@ This project simulates spacecraft attitude dynamics and control using Python. It
   - Use `Quaternion.from_euler_angles(roll, pitch, yaw)` (angles in radians).
 - **Inertia Tensor:**
   - The inertia tensor `I` is a 3x3 numpy array, with units of kg·m².
-  - Example values are provided for a 1U CubeSat.
+  - Example values are provided for a 1U CubeSat, but the matrix can be non-diagonal and asymmetric.
 - **Angular Velocity:** Always in the body frame, in radians per second.
 - **Torque Saturation:** Controller outputs are clipped axis-wise to the specified `max_torque` value.
+  - Random disturbance torque can be added in the simulation loop for realism (see `sim.py`).
 - **Simulation Time Step:** Default is `dt = 0.001` seconds for high-fidelity integration.
 
 ---
@@ -70,7 +71,7 @@ src/
 3. **Run the simulation:**
    ```bash
    cd /path/to/attitude_control
-   python3 -m src.attitude_control.sim
+  python3 -m src.attitude_control.sim
    ```
 
 ---
@@ -89,6 +90,10 @@ src/
 - The simulation uses torque as the main input, not angular acceleration.
 - The PD and PID controllers include torque saturation to reflect actuator limits.
 - Controller gains (Kp, Kd, Ki) and max torque are easily tunable in `sim.py`.
+  - Off-diagonal gain coupling is set by the `diag_gain` variable (0 for diagonal, >0 for coupling).
+  - Default gains as of 2025: `kp=400`, `ki=3`, `kd=1500` (see `sim.py`).
+  - Example desired attitude: roll=20°, pitch=10°, yaw=30° (radians in code).
+  - Random disturbance torque is added by default for robustness testing.
 - Visualization tools require Matplotlib and plot both angular velocity and Euler angles (in degrees).
 
 ---

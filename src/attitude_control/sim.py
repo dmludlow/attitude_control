@@ -1,3 +1,5 @@
+# Off-diagonal gain multiplier
+diag_gain = 0.6
 """
 This file contains the main simulation loop for a spacecraft attitude control system.
 """
@@ -37,13 +39,27 @@ kp = 230
 ki = 10
 kd = 800
 
-Kp = np.diag([kp, kp*0.75, kp*0.75])
-Ki = np.diag([ki, ki, ki])
-Kd = np.diag([kd, kd*0.75, kd*0.75])
+kp = 400
+ki = 3
+kd = 1500
 
-#Kp = np.diag([80.7888, 64.9552, 64.2592])
-#Kd = np.diag([363.5496, 292.2984, 289.1664])
-#Ki = np.diag([1.615776, 1.299104, 1.285184])
+Kp = np.diag([kp, kp, kp])
+Ki = np.diag([ki, ki, ki])
+Kd = np.diag([kd, kd, kd])
+
+diag_gain = 0
+
+Kp = np.array([[kp, kp*diag_gain, kp*diag_gain],
+               [kp*diag_gain, kp, kp*diag_gain],
+               [kp*diag_gain, kp*diag_gain, kp]])
+
+Ki = np.array([[ki, ki*diag_gain, ki*diag_gain],
+               [ki*diag_gain, ki, ki*diag_gain],
+               [ki*diag_gain, ki*diag_gain, ki]])
+
+Kd = np.array([[kd, kd*diag_gain, kd*diag_gain],
+               [kd*diag_gain, kd, kd*diag_gain],
+               [kd*diag_gain, kd*diag_gain, kd]])
 
 # Max torque the controller can apply (N*m)
 max_torque = 100
@@ -54,9 +70,9 @@ test_cont = ctrl.PID_control(max_torque, Kp, Ki, Kd)
 test_craft = sc.Spacecraft(I, initial_state, test_cont)
 
 # Desired state: roll, pitch, and yaw of __ degrees
-roll = np.deg2rad(30)
-pitch = np.deg2rad(40)
-yaw = np.deg2rad(20)
+roll = np.deg2rad(20)
+pitch = np.deg2rad(10)
+yaw = np.deg2rad(30)
 q_desired = qm.Quaternion.from_euler_angles(roll, pitch, yaw)
 
 # Desired angular velocity of zero
