@@ -70,6 +70,7 @@ states = []
 # Run the simulation for a number of steps
 for i in range(steps):
 
+    # Optional: Add some random disturbance torque
     random_disturbance = np.random.normal(0, 5, 3)
 
     # Compute control torque using the PD controller
