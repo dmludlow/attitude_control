@@ -16,7 +16,7 @@ import src.attitude_control.controllers as ctrl
 initial_state = st.State(
     # Initial quaternion representing no rotation
     q=qm.Quaternion(np.array([1, 0, 0, 0])), 
-    w=np.array([-0.2, 0.1, -0.1])    
+    w=np.array([-0.3, 0.2, -0.1])    
 )
 
 # Time for the simulation to run in seconds.
@@ -70,9 +70,9 @@ test_cont = ctrl.PID_control(max_torque, Kp, Ki, Kd)
 test_craft = sc.Spacecraft(I, initial_state, test_cont)
 
 # Desired state: roll, pitch, and yaw of __ degrees
-roll = np.deg2rad(20)
-pitch = np.deg2rad(10)
-yaw = np.deg2rad(30)
+roll = np.deg2rad(10)
+pitch = np.deg2rad(30)
+yaw = np.deg2rad(-20)
 q_desired = qm.Quaternion.from_euler_angles(roll, pitch, yaw)
 
 # Desired angular velocity of zero

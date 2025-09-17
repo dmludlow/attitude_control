@@ -31,7 +31,9 @@ def plot_w(states_arr: list, dt: float):
     plt.ylabel('Angular Velocity (rad/s)')
     plt.title('Angular Velocity Over Time')
     plt.legend()
-    plt.show()
+    plt.tight_layout()
+    plt.savefig('angular_velocity.png')
+    plt.close()
 
 def plot_q(states_arr: list, dt: float):
     """
@@ -59,4 +61,6 @@ def plot_q(states_arr: list, dt: float):
     plt.ylabel('Euler Angles (deg)')
     plt.title('Euler Angles Over Time')
     plt.legend()
-    plt.show()
+    plt.tight_layout()
+    plt.savefig('quaternion_euler_angles.png')
+    plt.close()
