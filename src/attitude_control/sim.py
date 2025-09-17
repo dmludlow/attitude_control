@@ -1,7 +1,12 @@
-# Off-diagonal gain multiplier
-diag_gain = 0.6
 """
 This file contains the main simulation loop for a spacecraft attitude control system.
+"""
+
+"""
+Improvments to make:
+- Revisit and streamline random disturbance torques
+- Add basic front end to call sim, streamline input of inertia, initial conditions, controller type, etc.
+- Make actuators more realistic (rate limits and startup torques)
 """
 
 import numpy as np
@@ -35,17 +40,9 @@ I = np.array([
 ])
 
 # Tuned PID controller gains
-kp = 230
-ki = 10
-kd = 800
-
 kp = 400
 ki = 3
 kd = 1500
-
-Kp = np.diag([kp, kp, kp])
-Ki = np.diag([ki, ki, ki])
-Kd = np.diag([kd, kd, kd])
 
 diag_gain = 0
 

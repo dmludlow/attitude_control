@@ -2,6 +2,12 @@
 This file contains implementation of a PID controller for spacecraft attitude control
 """
 
+"""
+Possibly imporvements:
+- Add eta max parameter to constructor
+- Revisit anti-windup strategy
+"""
+
 import numpy as np
 import src.attitude_control.controllers as ctrl
 import src.attitude_control.object_state.state as st
@@ -49,13 +55,15 @@ class PID_control(ctrl.Controller):
         if q_e.q[0] < 0:
             q_e = q_e.negative
         e = q_e.q[1:]
+        # Not actually sure why this is needed, but all angles are flipped without
         e = -e
 
         # Body-rate error: current - desired (negative feedback for D term)
         w_err = state_in.w - state_desired.w
 
-        # ---- Integral update with angle-meaningful clamp and simple anti-windup ----
-        eta_max = 0.2  # rad-equivalent bound per axis
+        # Integral update with angle-meaningful clamp and simple anti-windup
+        # Clamp integral growth to +/- eta_max on each axis
+        eta_max = 0.2 
         prev_int = self.integral_err.copy()
         cand_int = np.clip(self.integral_err + e * dt, -eta_max, eta_max)
 
