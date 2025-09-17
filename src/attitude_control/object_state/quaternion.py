@@ -36,6 +36,16 @@ class Quaternion:
             Quaternion: The normalized quaternion as a Quaternion object.
         """
         return Quaternion(self.q / np.linalg.norm(self.q))
+    
+    @property
+    def negative(self):
+        """
+        Returns the negative of the quaternion.
+
+        Returns:
+            Quaternion: The negative quaternion as a Quaternion object.
+        """
+        return Quaternion(-self.q)
 
     @property
     def q_conj(self):

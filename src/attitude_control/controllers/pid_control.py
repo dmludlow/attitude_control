@@ -1,5 +1,5 @@
 """
-This file contains implimentation of a PID controller for spacecraft attitude control
+This file contains implementation of a PID controller for spacecraft attitude control
 """
 
 import numpy as np
@@ -36,36 +36,42 @@ class PID_control(ctrl.Controller):
         Computes the control torque.
         Args:
             state_in (st.State): Current state of the spacecraft.
-            state_desired (sc.State): Desired state of the spacecraft.
+            state_desired (st.State): Desired state of the spacecraft.
             I (np.ndarray): Inertia tensor of the spacecraft.
             dt (float): Time step in seconds.
         Returns:
             np.ndarray: Control torque vector.
         """
-        # Quaternion error
-        q_e = state_in.q.q_prod(state_desired.q.q_conj)
+        # Quaternion error (desired * conj(current))
+        q_e = state_desired.q.q_prod(state_in.q.q_conj)
 
-        # Take the vector part of the quaternion error for control
-        # FIXED: Ensure we take the "short way" rotation
+        # Enforce shortest rotation: flip entire quaternion if scalar < 0
         if q_e.q[0] < 0:
-            q_e_vec = -q_e.q[1:]  # Flip to take shorter path
+            q_e = q_e.negative
+        e = q_e.q[1:]
+        e = -e
+
+        # Body-rate error: current - desired (negative feedback for D term)
+        w_err = state_in.w - state_desired.w
+
+        # ---- Integral update with angle-meaningful clamp and simple anti-windup ----
+        eta_max = 0.2  # rad-equivalent bound per axis
+        prev_int = self.integral_err.copy()
+        cand_int = np.clip(self.integral_err + e * dt, -eta_max, eta_max)
+
+        # Form raw torque with candidate integral (all negative feedback)
+        T_raw = -(self.Kp @ e) - (self.Kd @ w_err) - (self.Ki @ cand_int)
+
+        # Add gyroscopic compensation (computed-torque feedforward)
+        T_raw = T_raw + np.cross(state_in.w, I @ state_in.w)
+
+        # Saturate to actuator limits
+        T_c = np.clip(T_raw, -self.max_torque, self.max_torque)
+
+        # Simple anti-windup: if saturated, revert the integral growth for this step
+        if np.any(T_c != T_raw):
+            self.integral_err = prev_int
         else:
-            q_e_vec = q_e.q[1:]
-            
-        # Angular velocity error
-        w_e = state_desired.w - state_in.w
+            self.integral_err = cand_int
 
-        # Update integral error
-        self.integral_err += q_e_vec * dt
-        print(self.integral_err)
-
-        self.integral_err = np.clip(self.integral_err, -1, 1)  # Anti-windup
-
-        # Controller torque calculation
-        T_c =  - self.Kp @ q_e_vec + self.Kd @ w_e + self.Ki @ self.integral_err
-
-        # Clip each axis to +/- max_torque
-        T_c = np.clip(T_c, -self.max_torque, self.max_torque)
-        # print(f"Control Torque: {T_c}")
-        # print(self.max_torque)
         return T_c
