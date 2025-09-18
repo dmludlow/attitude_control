@@ -2,10 +2,10 @@
 This file defines the Spacecraft class for simulating spacecraft dynamics.
 """
 
-from .object_state import state as st
-from .object_state import quaternion as qm
-from .object_state import dynamics as dy
-from .controllers import controller as ctrl
+from . import state as st
+from . import quaternion as qm
+from . import dynamics as dy
+from ..controllers import controller as ctrl
 import numpy as np
 
 

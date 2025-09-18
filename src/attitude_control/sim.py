@@ -11,7 +11,7 @@ Improvments to make:
 
 import numpy as np
 import copy
-import src.attitude_control.spacecraft as sc
+import src.attitude_control.object_state.spacecraft as sc
 import src.attitude_control.utils.visualization as vis
 import src.attitude_control.object_state.state as st
 import src.attitude_control.object_state.quaternion as qm
@@ -21,7 +21,7 @@ import src.attitude_control.controllers as ctrl
 initial_state = st.State(
     # Initial quaternion representing no rotation
     q=qm.Quaternion(np.array([1, 0, 0, 0])), 
-    w=np.array([-0.3, 0.2, -0.1])    
+    w=np.array([-0.1, 0.2, -0.1])    
 )
 
 # Time for the simulation to run in seconds.

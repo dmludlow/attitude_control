@@ -4,8 +4,6 @@ This file contains functions for visualizing spacecraft dynamics simulation resu
 
 import matplotlib.pyplot as plt
 import numpy as np
-import src.attitude_control.spacecraft
-import src.attitude_control.object_state.state
 import src.attitude_control.object_state.quaternion as qm
 
 
