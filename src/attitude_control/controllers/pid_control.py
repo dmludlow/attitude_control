@@ -50,6 +50,8 @@ class PID_control(ctrl.Controller):
         """
         # Quaternion error (desired * conj(current))
         q_e = state_desired.q.q_prod(state_in.q.q_conj)
+        #q_e = state_in.q.q_prod(state_desired.q.q_conj)
+
 
         # Enforce shortest rotation: flip entire quaternion if scalar < 0
         if q_e.q[0] < 0:

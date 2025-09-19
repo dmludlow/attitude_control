@@ -52,6 +52,7 @@ class Slew:
         # Plan the rotation
         # Quaternion error (desired * conj(current))
         path = self.desired_state.q.q_prod(self.initial_state.q.q_conj)
+        #path = self.initial_state.q.q_prod(self.desired_state.q.q_conj)
 
         # Enforce shortest rotation: flip entire quaternion if scalar < 0
         if path.q[0] < 0:

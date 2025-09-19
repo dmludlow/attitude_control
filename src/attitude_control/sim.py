@@ -28,9 +28,9 @@ initial_state = st.State(
 )
 
 # Time for the simulation to run in seconds.
-time = 200
+time = 150
 # Time step in seconds
-dt = 0.01
+dt = 0.001
 # Total simulation steps
 steps = int(time / dt)
 # Generate time array
@@ -107,6 +107,7 @@ for i in range(steps):
 
     # Optional: Add some random disturbance torque
     random_disturbance = np.random.normal(0, 5, 3)
+    #random_disturbance = np.array([0,0,0])
 
     #"""
     # Get the desired state from the trajectory at the current time step
