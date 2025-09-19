@@ -10,7 +10,7 @@ Possibly imporvements:
 
 import numpy as np
 import src.attitude_control.controllers as ctrl
-import src.attitude_control.object_state.state as st
+import src.attitude_control.plant.state as st
 
 class PID_control(ctrl.Controller):
     

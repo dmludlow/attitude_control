@@ -7,9 +7,9 @@ It includes methods for updating the state based on angular acceleration and tim
 normalizing the quaternion, and converting the state to a string representation.
 """
 
-from ..object_state import quaternion as qm
+from ..plant import quaternion as qm
 import numpy as np
-from ..object_state import dynamics as dy
+from ..plant import dynamics as dy
 
 
 class State:
@@ -40,7 +40,7 @@ class State:
     @property
     def norm(self):
         """Normalizes the state's quaternion."""
-        self.q = qm.q_normalize(self.q)
+        self.q = self.q.norm
 
     def  __str__(self):
         """Returns a string representation of the state."""

@@ -4,16 +4,17 @@ This file contains functions for visualizing spacecraft dynamics simulation resu
 
 import matplotlib.pyplot as plt
 import numpy as np
-import src.attitude_control.object_state.quaternion as qm
+import src.attitude_control.plant.quaternion as qm
 
 
-def plot_w(states_arr: list, dt: float):
+def plot_w(states_arr: list, dt: float, filename: str):
     """
     Plots the angular velocity over time from the states array.
 
     Args:
         states_arr: List of State objects containing the angular velocity.
         dt: Time step in seconds.
+        filename: Name of the file to save the plot.
     """
     # Extract angular velocities from states
     angular_velocities = np.array([state.w for state in states_arr])
@@ -30,16 +31,17 @@ def plot_w(states_arr: list, dt: float):
     plt.title('Angular Velocity Over Time')
     plt.legend()
     plt.tight_layout()
-    plt.savefig('angular_velocity.png')
+    plt.savefig(filename)
     plt.close()
 
-def plot_q(states_arr: list, dt: float):
+def plot_q(states_arr: list, dt: float, filename: str):
     """
     Plots the Euler angles over time from the states array.
 
     Args:
         states_arr: List of State objects containing the quaternion.
         dt: Time step in seconds.
+        filename: Name of the file to save the plot.
     """
     # Extract quaternions from states
     quaternions = np.array([state.q for state in states_arr])
@@ -60,5 +62,5 @@ def plot_q(states_arr: list, dt: float):
     plt.title('Euler Angles Over Time')
     plt.legend()
     plt.tight_layout()
-    plt.savefig('quaternion_euler_angles.png')
+    plt.savefig(filename)
     plt.close()

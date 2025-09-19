@@ -4,7 +4,7 @@ This file contains implimentation of a PD controller for spacecraft attitude con
 
 import numpy as np
 import src.attitude_control.controllers as ctrl
-import src.attitude_control.object_state.state as st
+import src.attitude_control.plant.state as st
 
 class PD_control(ctrl.Controller):
 
