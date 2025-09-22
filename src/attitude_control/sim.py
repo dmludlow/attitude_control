@@ -3,14 +3,13 @@ This file contains the main simulation loop for a spacecraft attitude control sy
 """
 
 """
-Improvments to make:
+TODO:
 - Convert into a class (with time as attibute)
 - Revisit and streamline random disturbance torques
 - Add basic front end to call sim, streamline input of inertia, initial conditions, controller type, etc.
 - Make actuators more realistic (rate limits and startup torques)
-- Make sure angles are mapped to correct angles
 - Add orbital dynamics, propagation, and major disturbance torques
-- Investigate different coordinate systems
+- Look into various coordinate systems
 - Improve efficiency
 """
 
@@ -75,9 +74,9 @@ test_cont = ctrl.PID_control(max_torque, Kp, Ki, Kd)
 test_craft = sc.Spacecraft(I, initial_state, test_cont)
 
 # Desired state: roll, pitch, and yaw of __ degrees
-roll = np.deg2rad(160)
-pitch = np.deg2rad(70)
-yaw = np.deg2rad(-130)
+roll = np.deg2rad(70)
+pitch = np.deg2rad(50)
+yaw = np.deg2rad(-30)
 q_desired = qm.Quaternion.from_euler_angles(roll, pitch, yaw)
 
 # Desired angular velocity of zero
