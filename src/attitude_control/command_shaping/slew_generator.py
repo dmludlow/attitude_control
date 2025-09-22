@@ -164,7 +164,7 @@ class Slew:
                                                 np.sin(rotation_angle/2) * (w[1] * self.dt) / rotation_angle,
                                                 np.sin(rotation_angle/2) * (w[2] * self.dt) / rotation_angle]
                                                 ))
-                q = (q.q_prod(dq)).norm
+                q = (dq.q_prod(q)).norm
             q_profile[i] = q
 
         # Final trajectory

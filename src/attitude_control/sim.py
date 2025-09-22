@@ -11,6 +11,7 @@ Improvments to make:
 - Make sure angles are mapped to correct angles
 - Add orbital dynamics, propagation, and major disturbance torques
 - Investigate different coordinate systems
+- Improve efficiency
 """
 
 import numpy as np
@@ -74,9 +75,9 @@ test_cont = ctrl.PID_control(max_torque, Kp, Ki, Kd)
 test_craft = sc.Spacecraft(I, initial_state, test_cont)
 
 # Desired state: roll, pitch, and yaw of __ degrees
-roll = np.deg2rad(60)
+roll = np.deg2rad(160)
 pitch = np.deg2rad(70)
-yaw = np.deg2rad(-40)
+yaw = np.deg2rad(-130)
 q_desired = qm.Quaternion.from_euler_angles(roll, pitch, yaw)
 
 # Desired angular velocity of zero

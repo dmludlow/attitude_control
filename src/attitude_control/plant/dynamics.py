@@ -61,7 +61,7 @@ def integrate_angle(q: qm.Quaternion, w: np.ndarray, a: np.ndarray, dt: float) -
                                     np.sin(theta/2) * (w_ave[1] * dt) / theta,
                                     np.sin(theta/2) * (w_ave[2] * dt) / theta]
                                     ))
-    return (q.q_prod(dq)).norm
+    return (dq.q_prod(q)).norm
 
 def torque_to_ang_accel (I: np.ndarray, T: np.ndarray, w: np.ndarray) -> np.ndarray:
     """

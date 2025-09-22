@@ -34,8 +34,10 @@ class State:
             a (np.ndarray): Angular acceleration vector.
             dt (float): Time step in seconds.
         """
+        # Integrate omega first, but use the pre-update rate for attitude integration
+        w_prev = self.w.copy()
         self.w = dy.integrate_omega(self.w, a, dt)
-        self.q = dy.integrate_angle(self.q, self.w, a, dt)
+        self.q = dy.integrate_angle(self.q, w_prev, a, dt)
     
     @property
     def norm(self):
