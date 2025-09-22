@@ -38,17 +38,20 @@ class PD_control(ctrl.Controller):
         Returns:
             np.ndarray: Control torque vector.
         """
-        # Quaternion error
+        # Quaternion error (desired * conj(current))
         q_e = state_desired.q.q_prod(state_in.q.q_conj)
+        # Enforce shortest rotation: flip sign if scalar part negative
+        if q_e.q[0] < 0:
+            q_e = q_e.negative
+        # Vector part of the error; negative feedback uses -e
+        e = q_e.q[1:]
+        e = -e
 
-        # Take the vector part of the quaternion error for control
-        q_e_vec = q_e.q[1:]
+        # Body-rate error as current - desired for negative feedback
+        w_err = state_in.w - state_desired.w
 
-        # Angular velocity error
-        w_e = state_desired.w - state_in.w
-
-        # Controller torque calculation
-        T_c = self.Kp @ q_e_vec - self.Kd @ w_e
+        # Controller torque calculation (all negative feedback terms)
+        T_c = -(self.Kp @ e) - (self.Kd @ w_err)
 
         # Clip each axis to +/- max_torque
         T_c = np.clip(T_c, -self.max_torque, self.max_torque)

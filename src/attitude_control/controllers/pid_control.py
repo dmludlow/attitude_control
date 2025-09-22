@@ -50,14 +50,14 @@ class PID_control(ctrl.Controller):
         """
         # Quaternion error (desired * conj(current))
         q_e = state_desired.q.q_prod(state_in.q.q_conj)
-        #q_e = state_in.q.q_prod(state_desired.q.q_conj)
-
 
         # Enforce shortest rotation: flip entire quaternion if scalar < 0
         if q_e.q[0] < 0:
             q_e = q_e.negative
         e = q_e.q[1:]
-        # Not actually sure why this is needed, but all angles are flipped without
+        # Required torque is the negative of the error for feedback
+        # τ = −Kp e we set e = −q_e_vec so a positive desired angle yields
+        # a positive body torque in the correct direction.
         e = -e
 
         # Body-rate error: current - desired (negative feedback for D term)

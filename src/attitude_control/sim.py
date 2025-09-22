@@ -9,6 +9,8 @@ Improvments to make:
 - Add basic front end to call sim, streamline input of inertia, initial conditions, controller type, etc.
 - Make actuators more realistic (rate limits and startup torques)
 - Make sure angles are mapped to correct angles
+- Add orbital dynamics, propagation, and major disturbance torques
+- Investigate different coordinate systems
 """
 
 import numpy as np

@@ -151,12 +151,13 @@ class Slew:
             else:
                 rotation_angle = np.linalg.norm(w * self.dt)
                 if rotation_angle < 1e-8:
-                    # Small angle approximation
-                    dq = qm.Quaternion(np.array([1, 
-                                                rotation_angle/2 * (w[0] * self.dt),
-                                                rotation_angle/2 * (w[1] * self.dt),
-                                                rotation_angle/2 * (w[2] * self.dt)]
-                                                ))
+                    # Small angle approximation: dq ≈ [1, 0.5 * w * dt]
+                    dq = qm.Quaternion(np.array([
+                        1.0,
+                        0.5 * w[0] * self.dt,
+                        0.5 * w[1] * self.dt,
+                        0.5 * w[2] * self.dt
+                    ]))
                 else:
                     dq = qm.Quaternion(np.array([np.cos(rotation_angle/2), 
                                                 np.sin(rotation_angle/2) * (w[0] * self.dt) / rotation_angle,
