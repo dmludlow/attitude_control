@@ -7,6 +7,7 @@ from . import quaternion as qm
 from . import dynamics as dy
 from ..controllers import controller as ctrl
 import numpy as np
+from ..command_shaping import trajectory as traj
 
 
 class Spacecraft:
@@ -15,8 +16,14 @@ class Spacecraft:
     I: np.ndarray
     state: st.State
     controller: ctrl.Controller
+    # Stores the history of states for analysis
+    state_history: np.ndarray
+    # Desired states and corresponding times
+    state_goal: np.ndarray
+    # Trajectory for the spacecraft to follow (initialized later in simulation)
+    trajectory: traj.Trajectory | None
 
-    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.Controller = None):
+    def __init__(self, I: np.ndarray, state_in: st.State, controller: ctrl.Controller, state_goal: np.ndarray = None):
         """
         Initializes the Spacecraft with inertia tensor and initial state.
 
@@ -28,6 +35,19 @@ class Spacecraft:
         self.I = I
         self.state = state_in
         self.controller = controller
+
+        # Initialize state history as an empty array to store state objects
+        self.state_history = np.array([], dtype=object)
+
+        # Initialize state goal array
+        if state_goal is None:
+            self.state_goal = np.array([], dtype=object)
+        else:
+            self.state_goal = state_goal
+
+        # All spacecraft start with no trajectory (set later in simulation)
+        self.trajectory = None
+
 
     def step(self, T: np.ndarray, dt: float):
         """
