@@ -8,21 +8,22 @@ This project simulates spacecraft attitude dynamics and control in Python. It’
 
 - **Torque-Driven Dynamics:** Rigid-body rotation with Euler’s equations, using `I w_dot + w × (I w) = T` (gyroscopic term included).
 - **Quaternion State Propagation:** Scalar-first quaternions with normalization each step; stable small-angle handling.
-- **Controllers:** PD and PID controllers with axis-wise torque saturation. Gains can be diagonal or full matrices; off-diagonal coupling via `diag_gain` in `sim.py`.
-- **Slew Generation:** Trapezoidal/triangular angular-rate profiles respecting `w_max` and `a_max`, with shortest-path quaternion planning.
-- **Visualization:** Plots of body angular velocity and Euler angles vs. time for both the simulation and the generated slew.
-- **Clear Conventions:** Nav→body (active) attitude convention throughout; consistent quaternion/Euler conversions.
+- **Controllers:** PD and PID controllers (anti-windup + saturation). Gains currently diagonal; easily extended.
+- **Multi-Waypoint Slews:** Trapezoidal / triangular angular-rate profiles respecting `w_max`, `a_max`, shortest-path quaternion planning between successive goals.
+- **Trajectory Stitching:** Automatic hold insertion so each segment arrives at its specified absolute time.
+- **Visualization:** Plots of body angular velocity and Euler angles vs. time for each spacecraft.
+- **Clear Conventions:** Nav→Body (active) convention; consistent quaternion/Euler conversions.
 
 ---
 
 ## Important Conventions
 
 - **Quaternion Format:** `[q0, q1, q2, q3]` with `q0` scalar-first. Conjugate is `[q0, -q1, -q2, -q3]`.
-- **Multiplication:** `q1.q_prod(q2)` implements the Hamilton product in scalar-first form; composition uses right-multiplication for active rotations.
-- **Nav→Body Error:** Controllers use `q_err = q_desired · q_current*`. Shortest-path enforced by flipping the full quaternion if `q_err.q0 < 0`.
-- **Feedback Sign (Controllers):** For small angles, `q_err_vec ≈ +δθ/2`. With negative-feedback torque `τ = −Kp e − Kd(w_cur − w_des)`, we set `e = −q_err_vec` so a positive desired angle yields a positive body torque.
-- **Euler Angles:** Intrinsic Tait–Bryan sequence `'xyz'` (roll–pitch–yaw). Plots display degrees.
-- **Angular Velocity:** Always in the body frame (rad/s).
+- **Multiplication:** `q1.q_prod(q2)` implements Hamilton product (scalar-first); right-multiplication for active composition.
+- **Nav→Body Error:** `q_err = q_desired * q_current*`; if `q_err.q0 < 0`, flip sign (shortest path).
+- **Feedback Sign:** Small-angle: `q_err_vec ≈ +δθ/2`; controller uses `e = -q_err_vec` so positive desired angle → positive body torque.
+- **Euler Angles:** Intrinsic Tait–Bryan `'xyz'` (roll–pitch–yaw), plotted in degrees.
+- **Angular Velocity:** Body frame (rad/s).
 
 ---
 
@@ -34,21 +35,22 @@ This project simulates spacecraft attitude dynamics and control in Python. It’
 ├── src/
 │   └── attitude_control/
 │       ├── __init__.py
-│       ├── sim.py                        # Simulation setup + loop + plotting
+│       ├── main.py                       # Example setup: spacecraft, goals, run Simulation
+│       ├── simulation.py                 # Simulation class (planning + loop + plotting hook)
 │       ├── command_shaping/
 │       │   ├── __init__.py
 │       │   ├── slew_generator.py         # Quaternion shortest-path + rate profile
-│       │   └── trajectory.py             # Trajectory container + plotting helper
+│       │   └── trajectory.py             # Trajectory container + merge logic
 │       ├── controllers/
 │       │   ├── __init__.py
-│       │   ├── controller.py             # Base class (max torque, interface)
-│       │   ├── pd_control.py             # PD controller (negative feedback)
+│       │   ├── controller.py             # Base class (interface + saturation)
+│       │   ├── pd_control.py             # PD controller
 │       │   └── pid_control.py            # PID controller + anti-windup
 │       ├── plant/
 │       │   ├── __init__.py
-│       │   ├── dynamics.py               # Integrators + torque→alpha
+│       │   ├── dynamics.py               # Torque → angular accel (includes gyro term)
 │       │   ├── quaternion.py             # Quaternion math + Euler conversions
-│       │   ├── spacecraft.py             # Applies torque to state (I, w)
+│       │   ├── spacecraft.py             # Spacecraft class (state + stepping)
 │       │   └── state.py                  # Attitude + rate state container
 │       └── utils/
 │           ├── __init__.py
@@ -60,7 +62,7 @@ This project simulates spacecraft attitude dynamics and control in Python. It’
 
 ## Getting Started
 
-1. **Create and activate a virtual environment (recommended):**
+1. **Create & activate a virtual environment (recommended):**
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate
@@ -70,20 +72,18 @@ This project simulates spacecraft attitude dynamics and control in Python. It’
    ```bash
    pip install numpy scipy matplotlib
    ```
-3. **Run the simulation:**
+3. **Run the simulation example:**
    ```bash
-   # Option A: via helper script
+   python3 -m src.attitude_control.main
+   # or
    ./run.sh
-
-   # Option B: as a module
-   python3 -m src.attitude_control.sim
    ```
 
 ---
 
 ## Requirements
 
-- Python 3.10+ (tested with 3.12)
+- Python 3.10+ (developed on 3.12)
 - NumPy
 - SciPy
 - Matplotlib
@@ -92,39 +92,33 @@ This project simulates spacecraft attitude dynamics and control in Python. It’
 
 ## Simulation Overview
 
-- **Initial Conditions:** Identity quaternion, zero rates by default (see `sim.py`).
-- **Desired Attitude:** Set via Euler angles; example uses roll=60°, pitch=70°, yaw=−40°.
-- **Controller:** PID by default with gains in `sim.py` (example: `kp=400`, `ki=3`, `kd=1500`). Max torque set via `max_torque`.
-- **Slew Profile:** Generated with `w_max` and `a_max` (example: 5°/s and 1°/s²). Trajectory plots saved separately.
-- **Disturbance:** Optional Gaussian torque added in-loop for realism (toggle in `sim.py`).
-- **Timestep:** `dt = 0.001 s`; duration `time = 150 s` by default.
-
-Generated plots at the repo root:
-- `angular_velocity.png`, `quaternion_euler_angles.png` (simulation results)
-- `angular_velocity_slew.png`, `quaternion_euler_angles_slew.png` (commanded slew)
-
-Note: PNGs are `.gitignore`d by default.
+- **Initial Conditions:** Identity quaternion, zero rates (`main.py`).
+- **Waypoints:** Three target attitudes (Euler → quaternion) with specified arrival times; final state held afterward.
+- **Controller:** PID (default gains: 400 / 3 / 1500, max torque 100 N·m) per axis.
+- **Slew Planning:** Uses `w_max = 0.1 rad/s`, `a_max = 0.05 rad/s²` to build per-segment profiles; inserts hold segments automatically.
+- **Disturbance:** Small Gaussian torque added each step (illustrative).
+- **Timestep / Duration:** `dt = 0.01 s`, total `time = 200 s` (adjust in `main.py`).
+- **Outputs:** Plots (e.g. `craft_1_angular_velocity.png`, `craft_1_quaternion_euler_angles.png`) saved at repo root.
 
 ---
 
 ## Implementation Notes
 
-- **Dynamics Integration:**
-  - Angular rates: explicit Euler integration.
-  - Attitude: right-multiplication by incremental quaternion `dq`; small-angle case uses `dq ≈ [1, 0.5 w dt]`.
-- **Computed-Torque Term (PID):** Adds `w × (I w)` for gyroscopic compensation before saturation.
-- **Shortest Path:** If the scalar part of the error quaternion is negative, the quaternion is flipped to follow the minimal rotation.
-- **Consistency:** All conversions and multiplications use scalar-first quaternions and the `'xyz'` Euler sequence.
+- **Dynamics Integration:** Explicit Euler for `w`; quaternion updated via incremental rotation (`dq ≈ [1, 0.5 w dt]`).
+- **Gyroscopic Term:** `w × (I w)` included when mapping torque to angular acceleration.
+- **Shortest Path:** Quaternion sign flipped if scalar part negative.
+- **Trajectory Merge:** Feasibility check ensures arrival times are consistent before concatenation.
+- **State History:** Stored as object array of `State` for post-run analysis & plotting.
 
 ---
 
 ## Roadmap / Ideas
 
-- Convert `sim.py` into a configurable class with runtime options.
-- Refine disturbance torques and add orbital propagation/major disturbances.
-- Actuator realism: rate limits, startup torque, and deadband.
-- Alternate frames/coordinate systems and comparison tooling.
-- Automated tests and benchmarks for controller performance.
+- Configurable CLI / YAML input instead of hard-coded `main.py`.
+- More realistic actuators (rate limits, deadband, startup transients).
+- Disturbance & orbital environment models.
+- Additional controllers (LQR, adaptive, feedforward) + automated tests.
+- Profiling & performance benchmarking harness.
 
 ---
 

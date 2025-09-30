@@ -2,6 +2,16 @@
 This is the main file to run the spacecraft attitude control simulation.
 """
 
+"""
+TODO:
+- Revisit and streamline random disturbance torques
+- Add basic front end to call sim, streamline input of inertia, initial conditions, controller type, etc.
+- Make actuators more realistic (rate limits and startup torques)
+- Add orbital dynamics, propagation, and major disturbance torques
+- Look into various coordinate systems
+- Improve efficiency
+"""
+
 import numpy as np
 import src.attitude_control.plant.spacecraft as sc
 import src.attitude_control.simulation as sim
