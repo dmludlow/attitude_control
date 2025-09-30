@@ -10,7 +10,7 @@ import src.attitude_control.plant.quaternion as qm
 import src.attitude_control.controllers as ctrl
 
 # Time step in seconds
-dt = 0.001
+dt = 0.01
 
 # Time for the simulation to run in seconds.
 time = 200
