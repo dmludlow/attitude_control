@@ -10,6 +10,8 @@ TODO:
 - Add orbital dynamics, propagation, and major disturbance torques
 - Look into various coordinate systems
 - Improve efficiency
+
+Ultimate goal is to make two spacecraft point at eachother in orbit.
 """
 
 import numpy as np
@@ -83,8 +85,11 @@ state_goal = np.array([[goal_state1, goal_state2, goal_state3], goal_times])
 # Make spacecraft object
 craft1 = sc.Spacecraft(I,initial_state, controller1, state_goal)
 
+state_goal = np.array([[goal_state3, goal_state2, goal_state1], goal_times])
+craft2 = sc.Spacecraft(I,initial_state, controller1, state_goal)
+
 # List of spacecraft to simulate
-crafts = [craft1]
+crafts = [craft1, craft2]
 
 simulation = sim.Simulation(dt, time, crafts)
 
