@@ -111,7 +111,9 @@ class Trajectory:
             filler_times = np.arange(min_start, start_B, dt)
             # Attitude array likely dtype=object, simple tile is fine
             if len(filler_times) > 0:
-                filler_attitude = np.tile(self.attitude[-1], (len(filler_times), 1))
+                # Keep attitude array 1D (len,) of Quaternion objects. np.tile would create shape (n,1)
+                # leading to concatenate dimension mismatch with existing 1D arrays.
+                filler_attitude = np.full(len(filler_times), self.attitude[-1], dtype=object)
                 filler_w = np.tile(self.angular_velocity[-1], (len(filler_times), 1))
             else:
                 filler_attitude = np.empty((0,), dtype=object)

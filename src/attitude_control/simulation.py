@@ -30,6 +30,9 @@ class Simulation:
         self.crafts = list(crafts)
 
     def run(self):
+        """
+        Runs the main simulation loop for the specified time and time step.
+        """
          # Total simulation steps
         steps = int(self.time / self.dt)
         # Generate time array
@@ -80,7 +83,11 @@ class Simulation:
                         filler_times = np.arange(0.0, start_B, self.dt)
                         # Build attitude / w arrays; attitude is object array
                         if len(filler_times) > 0:
-                            filler_att = np.tile(traj_plan_state.q, (len(filler_times), 1))
+                            # Attitude trajectory arrays are 1D object arrays of Quaternion objects.
+                            # Using np.tile on a Quaternion object produces a 2D (n,1) array which then
+                            # causes a dimension mismatch on concatenate with the existing 1D attitude array.
+                            # Use np.full to keep a flat (n,) object array instead.
+                            filler_att = np.full(len(filler_times), traj_plan_state.q, dtype=object)
                             filler_w = np.tile(traj_plan_state.w, (len(filler_times), 1))
                         else:
                             filler_att = np.empty((0,), dtype=object)
@@ -113,3 +120,43 @@ class Simulation:
 
                 # Update planning state for next goal
                 traj_plan_state = goal_state
+
+        # Run the simulation for each spacecraft
+        for craft in self.crafts:
+            for i in range(steps):
+                # Optional: Add some random disturbance torque
+                random_disturbance = np.random.normal(0, 2, 3)
+
+                # Get the desired state from the trajectory at the current time step
+                if craft.trajectory is not None and i < len(craft.trajectory.time):
+                    # Grabs the trajectory state
+                    state_desired = craft.trajectory.get_state(i)
+                elif craft.trajectory is not None:
+                    # If past the end of the trajectory, hold the last state
+                    state_desired = st.State(craft.trajectory.attitude[-1], craft.trajectory.angular_velocity[-1])
+                else:
+                    # No trajectory, hold current state
+                    state_desired = craft.state 
+
+                # Compute control torque using the PD controller
+                T_cur = craft.controller.torque(
+                    craft.state,
+                    state_desired,
+                    craft.I,
+                    self.dt
+                )
+
+                # Update the spacecraft state with the computed torque
+                craft.step(T_cur + random_disturbance, self.dt)
+
+                # Store a copy of the current state in history
+                craft.state_history = np.append(craft.state_history, copy.deepcopy(craft.state))
+
+        # Announce completion
+        print("Simulation complete.")
+
+    def visualize(self):
+        # Visualize the results of the simulation
+        for idx, craft in enumerate(self.crafts):
+            vis.plot_w(craft.state_history, self.dt, f'craft_{idx+1}_angular_velocity.png')
+            vis.plot_q(craft.state_history, self.dt, f'craft_{idx+1}_quaternion_euler_angles.png')

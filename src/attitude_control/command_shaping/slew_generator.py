@@ -71,7 +71,7 @@ class Slew:
             axis = np.array([path.q[1], path.q[2], path.q[3]]) / np.sin(angle / 2)
         
         # Determine if trapezoidal or triangular profile is needed
-        if angle < (self.w_max**2) / (2 * self.a_max):
+        if angle < (self.w_max**2) / (self.a_max):
             # Max angular velocity is not reached before midpoint
             profile_type = 'triangular'
         else:
@@ -100,8 +100,11 @@ class Slew:
             # Total time
             t_total = t_accel + t_coast + t_decel
 
-        # Create maneuver time array
-        t_maneuver = np.arange(0, t_total, self.dt)
+        # Create maneuver time array: start with arange (excluding endpoint), then append exact t_total if missing.
+        t_maneuver = np.arange(0.0, t_total, self.dt)
+        # Ensure the final intended time is included exactly once.
+        if t_maneuver.size == 0 or abs(t_maneuver[-1] - t_total) > 1e-12:
+            t_maneuver = np.append(t_maneuver, t_total)
 
         # Generate angular velocity profile
         # Scalar angular velocity profile 
@@ -110,30 +113,25 @@ class Slew:
         # Triangular case
         if profile_type == 'triangular':
             for i, t in enumerate(t_maneuver):
-                if t < t_accel:
+                if t <= t_accel:
                     # Acceleration phase
                     w_scalar[i] = self.a_max * t
-                elif t < t_total:
+                elif t <= t_total:
                     # Deceleration phase
                     w_scalar[i] = self.a_max * (t_total - t)
                 else:
-                    # End of maneuver
-                    w_scalar[i] = 0
+                    w_scalar[i] = 0.0
         # Trapezoidal case   
         else:
             for i, t in enumerate(t_maneuver):
-                if t < t_accel:
-                    # Acceleration phase
+                if t <= t_accel:
                     w_scalar[i] = self.a_max * t
-                elif t < (t_accel + t_coast):
-                    # Coast phase
+                elif t <= (t_accel + t_coast):
                     w_scalar[i] = self.w_max
-                elif t < t_total:
-                    # Deceleration phase
+                elif t <= t_total:
                     w_scalar[i] = self.a_max * (t_total - t)
                 else:
-                    # End of maneuver
-                    w_scalar[i] = 0
+                    w_scalar[i] = 0.0
 
         # Multiply by axis to get vector profile
         w_profile = np.outer(w_scalar, axis)
