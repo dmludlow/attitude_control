@@ -4,7 +4,7 @@ This file defines the Spacecraft class for simulating spacecraft dynamics.
 
 from . import state as st
 from . import quaternion as qm
-from . import dynamics as dy
+from .physics import angular_dynamics as dy
 from ..controllers import controller as ctrl
 import numpy as np
 from ..command_shaping import trajectory as traj

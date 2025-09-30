@@ -9,7 +9,7 @@ normalizing the quaternion, and converting the state to a string representation.
 
 from ..plant import quaternion as qm
 import numpy as np
-from ..plant import dynamics as dy
+from .physics import angular_dynamics as dy
 
 
 class State:
